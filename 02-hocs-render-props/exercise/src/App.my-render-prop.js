@@ -2,28 +2,38 @@ import React from "react";
 import createMediaListener from "./lib/createMediaListener";
 import { Galaxy, Trees, Earth } from "./lib/screens";
 
-const media = createMediaListener({
+const defaultMediaQueries = {
   big: "(min-width : 1000px)",
   tiny: "(max-width: 600px)"
-});
+};
 
-class App extends React.Component {
+class Media extends React.Component {
+  media = createMediaListener(this.props.queries);
+
   state = {
-    media: media.getState()
+    media: this.media.getState()
   };
 
   componentDidMount() {
-    media.listen(media => this.setState({ media }));
+    this.media.listen(media => this.setState({ media }));
   }
 
   componentWillUnmount() {
-    media.dispose();
+    this.media.dispose();
   }
 
   render() {
-    const { media } = this.state;
+    return this.props.children(this.state.media);
+  }
 
-    return (
+}
+
+export default () => { 
+  const query1 = { big: "(min-width : 1000px)", tiny: "(max-width: 200px)" }
+  const query2 = { big: "(min-width : 900px)", tiny: "(max-width: 700px)" }
+  return ( <Media queries={query1}>
+    {
+      media => (
       <div>
         {media.big ? (
           <Galaxy key="galaxy" />
@@ -33,8 +43,7 @@ class App extends React.Component {
           <Earth key="earth" />
         )}
       </div>
-    );
-  }
-}
-
-export default App;
+      )
+    }
+  </Media> )
+  };
