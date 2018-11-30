@@ -37,6 +37,20 @@ class App extends Component {
     });
   }
 
+  getSnapshotBeforeUpdate() {
+    let { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    return {
+      shouldPinToBottom: scrollHeight === scrollTop + clientHeight
+    };
+  }
+
+  componentDidUpdate(_, __, snapshot) {
+    if (snapshot.shouldPinToBottom) {
+      document.documentElement.scrollTop =
+        document.documentElement.scrollHeight;
+    }
+  }
+
   render() {
     const { messages } = this.state;
     return (
