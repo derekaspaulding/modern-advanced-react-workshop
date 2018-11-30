@@ -18,6 +18,25 @@ Tips:
 
 import React, { Component } from "react";
 
+class DocumentTitle extends Component {
+  updateTitle = () => {
+    const newTitle = this.props.children;
+    document.title = newTitle;
+  }
+
+  componentDidMount() {
+    this.updateTitle();
+  }
+
+  componentDidUpdate() {
+    this.updateTitle();
+  }
+
+  render() {
+    return null;
+  }
+}
+
 class App extends Component {
   state = {
     completed: 0,
@@ -28,45 +47,50 @@ class App extends Component {
     let { todos, completed } = this.state;
     let incomplete = todos.length - completed;
 
+    const titleString = `Todos (${incomplete})`;
+
     return (
-      <div className="app">
-        <h1>Todos ({incomplete})</h1>
+      <div>
+        <DocumentTitle>{titleString}</DocumentTitle>
+        <div className="app">
+          <h1>Todos ({incomplete})</h1>
 
-        <form
-          onSubmit={event => {
-            let todo = event.target.elements[0].value;
-            event.preventDefault();
-            event.target.reset();
-            this.setState(state => {
-              return { todos: state.todos.concat([todo]) };
-            });
-          }}
-        >
-          <input type="text" /> <button type="submit">Add</button>
-        </form>
+          <form
+            onSubmit={event => {
+              let todo = event.target.elements[0].value;
+              event.preventDefault();
+              event.target.reset();
+              this.setState(state => {
+                return { todos: state.todos.concat([todo]) };
+              });
+            }}
+          >
+            <input type="text" /> <button type="submit">Add</button>
+          </form>
 
-        <ul>
-          {todos.map(todo => (
-            <li>
-              <label>
-                <input
-                  type="checkbox"
-                  onChange={event => {
-                    let checked = event.target.checked;
-                    this.setState(state => {
-                      return {
-                        completed: checked
-                          ? state.completed + 1
-                          : state.completed - 1
-                      };
-                    });
-                  }}
-                />{" "}
-                {todo}
-              </label>
-            </li>
-          ))}
-        </ul>
+          <ul>
+            {todos.map(todo => (
+              <li>
+                <label>
+                  <input
+                    type="checkbox"
+                    onChange={event => {
+                      let checked = event.target.checked;
+                      this.setState(state => {
+                        return {
+                          completed: checked
+                            ? state.completed + 1
+                            : state.completed - 1
+                        };
+                      });
+                    }}
+                  />{" "}
+                  {todo}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   }
